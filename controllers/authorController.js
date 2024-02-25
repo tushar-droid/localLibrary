@@ -31,9 +31,6 @@ exports.author_detail = asyncHandler(async(req, res, next) =>{
         author: author,
         author_books: authorbooks
         })
-
-
-
 })
 
 exports.author_create_get = asyncHandler(async(req, res, next) =>{
