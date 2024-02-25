@@ -141,11 +141,36 @@ exports.book_create_post = [
 
 
 exports.book_delete_get = asyncHandler(async(req, res, next) =>{
-    res.send(`NOT IMPLEMENTED! BOOK DELETE GET!`)
+    const [book, bookinstances] = await Promise.all([
+        Book.findById(req.params.id).exec(),
+        BookInstance.find({book: req.params.id}).exec()
+    ]);
+    res.render("book_delete", {
+        title: "Delete Book",
+        book: book,
+        bookinstances: bookinstances
+    })
 })
 
 exports.book_delete_post = asyncHandler(async(req, res, next) =>{
-    res.send(`NOT IMPLEMENTED! BOOK DELETE POST!`)
+    const [book, bookinstances] = await Promise.all([
+        Book.findById(req.params.id).exec(),
+        BookInstance.find({book: req.params.id}).exec()
+    ]);
+    if(bookinstances.length){
+        res.render("book_delete", {
+            title: "Delete Book",
+            book: book,
+            bookinstances: bookinstances
+        })
+        return;
+    }
+    else{
+        await Book.findByIdAndDelete(req.body.bookid);
+        res.redirect("/catalog/books");
+    }
+
+
 })
 
 exports.book_update_get = asyncHandler(async(req ,res , next) =>{

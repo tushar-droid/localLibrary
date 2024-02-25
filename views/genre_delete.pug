@@ -1,0 +1,22 @@
+extends layout 
+
+block content 
+
+    h2= title
+
+    h1= genre.name
+
+    hr
+
+    if books.length 
+        h2 Books in genre 
+        for book in books 
+            p
+                a(href=book.url) #{book.title}
+                
+    else 
+        p Do you Really want to delete this Genre?
+        form(method="POST")
+            div.form-group
+                input#genreid.form-control(type=hidden, name='genreid', value=genre._id)
+            button.btn.btn-primary(type='submit') Delete

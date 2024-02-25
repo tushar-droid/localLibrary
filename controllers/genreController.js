@@ -84,10 +84,20 @@ exports.genre_create_post = [
 
 
 exports.genre_delete_get = asyncHandler(async(req, res, next) =>{
-    res.send(`NOT IMPLEMENTED GENRE DELETE GET`);
+  const [genre_to_delete, books_in_genre] = await Promise.all([
+    genre.findById(req.params.id).exec(),
+    Book.find({genre: req.params.id}, "title").exec()
+  ]);
+
+  res.render("genre_delete", {
+      title: "Genre Delete",
+      genre: genre_to_delete,
+      books: books_in_genre
+    })
 })
 
 exports.genre_delete_post = asyncHandler(async(req,res, next) =>{
+    //TO BE IMPLEMENTED
     res.send(`NOT IMPLEMENTED! GENRE DELETE POST`)
 })
 
