@@ -9,14 +9,14 @@ block content
     hr
 
     if books.length 
-        h2 Books in genre 
+        h2 Please delete the following books in the Genre First
         for book in books 
-            p
+            dt
                 a(href=book.url) #{book.title}
                 
     else 
         p Do you Really want to delete this Genre?
         form(method="POST")
             div.form-group
-                input#genreid.form-control(type=hidden, name='genreid', value=genre._id)
+                input#genreid.form-control(type='hidden', name='genreid', value=genre._id)
             button.btn.btn-primary(type='submit') Delete
