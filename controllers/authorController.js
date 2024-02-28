@@ -1,4 +1,5 @@
 const Author = require('../models/author');
+const book = require('../models/book');
 const Book = require('../models/book')
 const asyncHandler = require('express-async-handler');
 const {body, validationResult} = require('express-validator');
@@ -56,7 +57,7 @@ exports.author_create_post = [
         .optional({values: "false"})
         .isISO8601()
         .toDate(),
-    body("date_of_deathf", "Invalid date of death")
+    body("date_of_death", "Invalid date of death")
         .optional({values: "false"})
         .isISO8601()
         .toDate(),
@@ -126,10 +127,47 @@ exports.author_delete_post = asyncHandler(async(req,res, next) =>{
 })
 
 exports.author_update_get = asyncHandler(async(req, res, next) =>{
-    res.send(`NOT IMPLEMENTED! AUTHOR UPDATE GET`);
+    const author = await Author.findById(req.params.id).exec();
+    if(author=== null){
+        const err= new Error("Author Not found");
+        err.status = 404;
+        return next(err);
+    }
+    res.render("author_form", {
+        title: "Update Author",
+        author: author,
+    });
 })
 
-exports.author_update_post = asyncHandler(async(req, res, next) =>{
-    res.send('NOT IMPLEMENTED! AUTHOR UPDATE POST')
-})
+exports.author_update_post =[
+    body("first_name", "First Name must not be Empty")
+        .trim()
+        .isLength({min:1})
+        .escape(),
+    body("family_name", "Family Name must not be Empty")
+        .trim()
+        .isLength({min:1})
+        .escape(),
+    asyncHandler(async(req, res, next) =>{
+        const errors = validationResult(req);
+        const author = new Author({
+            title: req.body.first_name,
+            family_name: req.body.family_name,
+            date_of_birth: req.body.date_of_birth,
+            date_of_death: req.body.date_of_death,
+            _id: req.params.id
+        })
+        if(!errors.isEmpty()){
+            res.render("author_form", {
+                title: "Update Author",
+                author: author
+            });
+            return;
+        }
+        else{
+            const updatedAuthor = await Author.findByIdAndUpdate(req.params.id, author, {});
+            res.redirect(author.url);
+        }
+    })
+]
 
